@@ -1,7 +1,7 @@
 import pygame
 import time
 from classes import ANCHO_PANTALLA, ALTO_PANTALLA, COLOR_NAVE, PANTALLA
-from classes.Proyectil import Proyectil
+from classes.Proyectil import Proyectil, Metralla, Misil
 
 class Nave:
     def __init__(self):
@@ -17,7 +17,7 @@ class Nave:
         self.ultimo_disparo_misil = 0
         self.cd_disparo_misil = 0.2 # Cooldown standard de disparo del misil
         self.contador_disparo = 0 # Contador de tiros de metralleta
-        self.TICK_LIMITE_METRALLETA = 10 # Entre ticks de disparos de metralleta
+        self.TICK_LIMITE_METRALLETA = 15 # Entre ticks de disparos de metralleta
         self.misiles = [] # Donde guardo los misiles que pertenecen a este objeto para su renderizado
         self.proyectiles = [] # Guardo los proyectiles de la metralleta para renderizar
         
@@ -78,10 +78,13 @@ class Nave:
                 
     def disparar_metralleta(self):
         if self.contador_disparo >= self.TICK_LIMITE_METRALLETA:
-            if self.cantidad_metralleta >= 1:
-                self.cantidad_metralleta -= 1
-                proyectil = Proyectil(self.x + self.ancho // 2 - 2.5, self.y)
-                self.proyectiles.append(proyectil)
+            if self.cantidad_metralleta >= 3:
+                self.cantidad_metralleta -= 3
+                offsets = [-10, 0, 10]
+                for offset in offsets:
+                    proyectil = Metralla(self.x + self.ancho // 2 - 2.5 + offset, self.y)
+                    self.proyectiles.append(proyectil)
+                                    
                 print("Metralleta: " + str(self.cantidad_metralleta))
             else:
                 print("Sin municion de metralleta")
@@ -96,7 +99,7 @@ class Nave:
             if self.cantidad_misiles >= 1:    
                 self.ultimo_disparo_misil = momento_disparo
                 self.cantidad_misiles -= 1
-                misil = Proyectil(self.x + self.ancho // 2 - 2.5, self.y)
+                misil = Misil(self.x + self.ancho // 2 - 2.5, self.y)
                 self.proyectiles.append(misil)
                 print("Misil: " + str(self.cantidad_misiles))
             else:
