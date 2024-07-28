@@ -16,7 +16,6 @@ while True:
             
     PANTALLA.fill(COLOR_FONDO)
     
-    jugador.dibujar()
     jugador.update(eventos)
 
     pygame.display.flip()

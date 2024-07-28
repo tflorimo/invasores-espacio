@@ -10,9 +10,11 @@ class Nave:
         self.y = ALTO_PANTALLA - self.alto - 10
         self.salud = 100
         self.velocidad = 5
-        self.ultimo_disparo = 0
-        self.cooldown_disparo = 0.2
         self.disparando = False
+        self.cantidad_metralleta = 100
+        self.cantidad_misiles = 15
+        self.ultimo_disparo_misil = 0
+        self.cd_disparo_misil = 0.2
         
     def dibujar(self):
         pygame.draw.rect(PANTALLA, COLOR_NAVE, (self.x, self.y, self.ancho, self.alto))
@@ -37,28 +39,44 @@ class Nave:
             self.mover("arriba")
         elif teclas[pygame.K_DOWN]:
             self.mover("abajo")
+            
+            
+        if teclas[pygame.K_SPACE]:
+            self.disparando = True
+            if self.cantidad_metralleta >= 100:
+                self.disparar_metralleta()
+            else:
+                print("sin municion de metralleta")
                         
         for evento in eventos:
             if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_SPACE and not self.disparando:
-                    self.disparar()
-                    self.disparando = True
+                if evento.key == pygame.K_m and not self.disparando:
+                    if self.cantidad_misiles >= 1:
+                        self.disparar_misil()
+                        self.disparando = True
+                    else:
+                        print("sin municion de misiles")
+                                                
             elif evento.type == pygame.KEYUP:
-                if evento.key == pygame.K_SPACE and self.disparando:
+                if evento.key == pygame.K_m or evento.key == pygame.K_SPACE and self.disparando:
                     self.disparando = False
         
     def manejar_colisiones(self):
         # aqui
         pass
         
-    def disparar(self):
+    def disparar_metralleta(self):
+        self.cantidad_metralleta -= 1
+        print("Metralleta: " + str(self.cantidad_metralleta))
+        
+    def disparar_misil(self):
         momento_disparo = time.time()
-        if momento_disparo - self.ultimo_disparo > self.cooldown_disparo:
-            print("Estoy disparando")
-            self.ultimo_disparo = momento_disparo
-            
+        if momento_disparo - self.ultimo_disparo_misil > self.cd_disparo_misil:
+            self.ultimo_disparo_misil = momento_disparo
+            self.cantidad_misiles -= 1
+            print("Misil: " + str(self.cantidad_misiles))
     
     def update(self, eventos): 
+        self.dibujar()
         self.manejar_input(eventos)
         self.manejar_colisiones()
-        
