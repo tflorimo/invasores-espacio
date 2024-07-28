@@ -43,7 +43,7 @@ class Nave:
             
         if teclas[pygame.K_SPACE]:
             self.disparando = True
-            if self.cantidad_metralleta >= 100:
+            if self.cantidad_metralleta >= 1:
                 self.disparar_metralleta()
             else:
                 print("sin municion de metralleta")
